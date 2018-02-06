@@ -1,0 +1,6 @@
+Python compiled cache
+__pycache__/
+
+# dont upload config or db files
+*.ini
+*.db
