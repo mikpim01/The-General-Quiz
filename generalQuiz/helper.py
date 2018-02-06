@@ -3,7 +3,7 @@
 # generalQuiz/helper.py
 # by William Neild
 
-import shutil
+from shutil import get_terminal_size
 from time import sleep
 from sys import modules
 
@@ -35,12 +35,12 @@ def color():
 
 def cprint(string, txtc="bright"): # Center print function
     textStyles = color()
-    width = int(shutil.get_terminal_size()[0])-1
+    width = int(get_terminal_size()[0])-1
     print(textStyles[txtc] + str(string).center(width, " ") + textStyles["reset"])
     # sleep(0.01)
 
 def pline(char, txtc="lightcyan", extra=""): # Print line function
     textStyles = color()
-    width = int(shutil.get_terminal_size()[0])-1
+    width = int(get_terminal_size()[0])-1
     print(textStyles[txtc] + str(char) * width + textStyles["reset"] + str(extra))
     # sleep(0.01)

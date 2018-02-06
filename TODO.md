@@ -4,7 +4,7 @@
 - [x] Create DB Class
 - [x] Create Config
 - [x] Create all files as a Module
-- [ ] Create a responsive-like design with logo [small.txt, big.txt]
+- [x] Create a responsive-like design with logo [small.txt, big.txt]
 - [x] add colours when used in the terminal
 
 ### Users Section
@@ -17,9 +17,15 @@
 - [x] Add Salt in Config
 
 ### Quiz Section
-- [ ] Create Quiz code
+- [x] Create Quiz code
 - [x] Create Quiz list Table
-- [x] Create Questions Table \w answers
-- [ ] link from DB using array - store with json to keep type
-- [ ] Three tiers of answers [Easy, Medium, Hard]
-- [ ] automatically select number of answers
+- [x] Create Questions Table with answers
+- [x] link from DB using array
+- [x] Three tiers of answers [Easy, Medium, Hard]
+- [x] automatically select number of answers
+- [x] Saves result after test
+
+### Results section
+- [ ] Create Results code
+- [ ] order results by percentage (Displayed for current user)
+- [ ] Create export csv for admin / teacher with all results selected
