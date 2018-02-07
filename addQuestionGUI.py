@@ -1,6 +1,5 @@
 from tkinter import *
 from generalQuiz import db
-from json import dumps
 
 
 class questionGUI:
@@ -48,9 +47,9 @@ class questionGUI:
         self.ansB.set("")
         self.ansC.set("")
 
-        incorrectAns = dumps([str(ansA), str(ansB), str(ansC)])
+        incorrectAns = [str(ansA), str(ansB), str(ansC)]
 
-        db.Add.question(int(quizId), str(question), str(correctAns), str(incorrectAns))
+        db.Add.question(quizId, question, correctAns, incorrectAns)
         print(str(quizId), str(question), str(correctAns), str(incorrectAns))
 
 
