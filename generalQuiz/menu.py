@@ -7,8 +7,9 @@ from generalQuiz import security, db, config, quiz
 from generalQuiz.helper import cprint, pline
 from shutil import get_terminal_size
 
-db.Database.setup()
 config.Create()
+db.Database.setup()
+
 
 class Main:
     def __init__(self):

@@ -47,6 +47,7 @@ class Database:
             )''')
             conn.commit()
             conn.close()
+            import populate
 
 
 class Add:

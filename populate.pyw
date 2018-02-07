@@ -1,7 +1,7 @@
 from generalQuiz import db, security
 
 # Add temp user
-security.Account.register("username", "password", "FirstName", "LastName", 1, 1)
+# security.Account.register("username", "password", "FirstName", "LastName", 1, 1)
 
 # Add questions for Quiz 1
 db.Add.question(1, "What does LAN stand for?", "Local Area Network", ["Light Area Network", "Local Arena Network", "List Area Notes"])
@@ -19,9 +19,9 @@ db.Add.question(1, "Which of these isn't a Logic Gate?", "IF", ["AND", "XOR", "N
 db.Add.quiz("Computer Science")
 
 # add fake results
-db.Add.result(1, "Computer Science", 1, 10, 100.0, "HARD")
-db.Add.result(1, "Computer Science", 1, 9, 90.0, "HARD")
-db.Add.result(1, "Computer Science", 1, 8, 80.0, "HARD")
-db.Add.result(1, "Computer Science", 1, 5, 50.0, "HARD")
-db.Add.result(1, "Computer Science", 1, 1, 10.0, "HARD")
-db.Add.result(1, "Computer Science", 1, 7, 70.0, "HARD")
+# db.Add.result(1, "Computer Science", 1, 10, 100.0, "HARD")
+# db.Add.result(1, "Computer Science", 1, 9, 90.0, "HARD")
+# db.Add.result(1, "Computer Science", 1, 8, 80.0, "HARD")
+# db.Add.result(1, "Computer Science", 1, 5, 50.0, "HARD")
+# db.Add.result(1, "Computer Science", 1, 1, 10.0, "HARD")
+# db.Add.result(1, "Computer Science", 1, 7, 70.0, "HARD")
