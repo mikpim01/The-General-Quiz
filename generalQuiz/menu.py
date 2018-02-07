@@ -149,7 +149,7 @@ class Home:
             exit()
         else:
             cprint("Option Doesn't Exist", "lightred")
-            self.options(user)
+            Home(user)
 
 class Quiz:
     quizList = db.Get.quizList()
@@ -188,11 +188,12 @@ class Results:
     def __init__(self, user):
         width = get_terminal_size()[0]-1
         data = db.Get.results(user["id"])
-        self.display(data, width)
+        self.display(data, width, user)
 
-    def display(self, data, width):
+    def display(self, data, width, user):
         size = int(width/5)
         print("\n{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(size*2), qName="Quiz Name", diff="Difficulty", score="Score", date="Date"))
         cprint("~"*(width-4), "lightcyan")
         for result in data:
             print("{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(size*2), qName=str(result[3]), diff=str(result[6]), score=str(result[5])+"%", date=str(result[7])))
+        Home(user)
