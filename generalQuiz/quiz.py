@@ -75,8 +75,18 @@ class Quiz:
         totalCorrect = score
         totalPercentage = (totalCorrect / totalQuestions) * 100
 
+        if difficulty == 1:
+            diff = "EASY"
+        elif difficulty == 2:
+            diff = "MEDIUM"
+        elif difficulty == 3:
+            diff = "HARD"
+        else:
+            print("Error, Difficulty somehow got messed up!")
+
+
         cprint("Total Questions: " + str(totalQuestions))
         cprint("Correct Answers: " + str(totalCorrect))
         cprint("Percent Correct: " + str("{0:.2f}".format(round(totalPercentage,2))) + "%")
-        db.Add.result(quiz[0], quiz[1], user["id"], totalCorrect, totalPercentage)
+        db.Add.result(quiz[0], quiz[1], user["id"], totalCorrect, totalPercentage, diff)
         pline("=")

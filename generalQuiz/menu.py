@@ -5,7 +5,8 @@
 
 from generalQuiz import security, db, config, quiz
 from generalQuiz.helper import cprint, pline
-import shutil
+from shutil import get_terminal_size
+
 db.Database.setup()
 config.Create()
 
@@ -31,7 +32,7 @@ class Main:
             exit()
         else:
             pline("=")
-            cprint("✘ Not a valid option, Try again ✘", "lightred")
+            cprint(" Not a valid option, Try again ", "lightred")
             pline("=")
             self.options()
 
@@ -58,7 +59,7 @@ class Account:
             Main()
         else:
             pline("=")
-            cprint("✘ Not a valid option, Try again ✘", "lightred")
+            cprint(" Not a valid option, Try again ", "lightred")
             pline("=")
             self.options()
 
@@ -75,7 +76,7 @@ class Account:
         if userLogin != False:
             Home(userLogin)
         else:
-            cprint("✘ Login details incorrect ✘", "lightred")
+            cprint(" Login details incorrect ", "lightred")
             self.login()
 
 
@@ -98,14 +99,14 @@ class Account:
         if account != []:
             pline("!", "lightred")
             for i in account:
-                cprint("✘ " + i + " ✘", "lightred")
+                cprint(" " + i + " ", "lightred")
             pline("!", "lightred")
             pline(" ")
             self.register()
         else:
             username = str(fname[:3]) + str(age)
             security.Account.register(username, password, fname, lname, age, year)
-            cprint("✔ Account created. Your username is: " + username + " ✔", "lightgreen")
+            cprint("Account created. Your username is: " + username, "lightgreen")
             self.login()
 
 class Home:
@@ -113,7 +114,7 @@ class Home:
     def __init__(self, user):
         self.user = user
         pline("=")
-        width = int(shutil.get_terminal_size()[0])+1
+        width = int(get_terminal_size()[0])+1
         if width >= 25:
             if width > 65:
                 size = "big"
@@ -185,5 +186,13 @@ class Quiz:
 
 class Results:
     def __init__(self, user):
-        allResults = db.Get.results(user["id"])
-        print(str(allResults))
+        width = get_terminal_size()[0]-1
+        data = db.Get.results(user["id"])
+        self.display(data, width)
+
+    def display(self, data, width):
+        size = int(width/5)
+        print("\n{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(size*2), qName="Quiz Name", diff="Difficulty", score="Score", date="Date"))
+        cprint("~"*(width-4), "lightcyan")
+        for result in data:
+            print("{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(size*2), qName=str(result[3]), diff=str(result[6]), score=str(result[5])+"%", date=str(result[7])))

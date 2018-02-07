@@ -5,6 +5,8 @@
 
 import sqlite3
 from os import path
+from json import dumps
+from datetime import datetime
 
 class Database:
     def setup():
@@ -13,33 +15,35 @@ class Database:
         else:
             conn = sqlite3.connect('main.db')
             c = conn.cursor()
-            c.execute('''CREATE TABLE users (
-                id INTEGER PRIMARY KEY,
-                username TEXT,
-                password TEXT,
-                firstName TEXT,
-                lastName TEXT,
-                age INTEGER,
-                year TEXT
+            c.execute('''CREATE TABLE 'users' (
+                'id' INTEGER PRIMARY KEY,
+                'username' TEXT,
+                'password' TEXT,
+                'firstName' TEXT,
+                'lastName' TEXT,
+                'age' INTEGER,
+                'year' TEXT
             );''')
-            c.execute('''CREATE TABLE quizlist (
-                id INTEGER PRIMARY KEY,
-                name TEXT
+            c.execute('''CREATE TABLE 'quizlist' (
+                'id' INTEGER PRIMARY KEY,
+                'name' TEXT
             );''')
-            c.execute('''CREATE TABLE questions (
-                id INTEGER PRIMARY KEY,
-                quizId INTEGER,
-                question TEXT,
-                correctAns TEXT,
-                otherAns TEXT
+            c.execute('''CREATE TABLE 'questions' (
+                'id' INTEGER PRIMARY KEY,
+                'quizId' INTEGER,
+                'question' TEXT,
+                'correctAns' TEXT,
+                'otherAns' TEXT
             )''')
-            c.execute('''CREATE TABLE results (
-                id INTEGER PRIMARY KEY,
-                userId INTEGER,
-                quizId INTEGER,
-                quizName TEXT,
-                totalCorrect INTEGER,
-                totalPercentage TEXT
+            c.execute('''CREATE TABLE 'results' (
+                'id' INTEGER PRIMARY KEY,
+                'userId' INTEGER,
+                'quizId' INTEGER,
+                'quizName' TEXT,
+                'totalCorrect' INTEGER,
+                'totalPercentage' REAL,
+                'difficulty' TEXT,
+                'date' TEXT
             )''')
             conn.commit()
             conn.close()
@@ -63,7 +67,7 @@ class Add:
             conn = sqlite3.connect('main.db')
             c = conn.cursor()
             query = "INSERT INTO questions(quizId, question, correctAns, otherAns) VALUES (?,?,?,?)"
-            data = (int(quizId), str(question), str(correctAns), str(otherAns))
+            data = (int(quizId), str(question), str(correctAns), str(dumps(otherAns)))
             c.execute(query, data)
             conn.commit()
             conn.close()
@@ -83,12 +87,13 @@ class Add:
         except Exception as e:
             print("Error with db, cannot create quiz" + str(e))
 
-    def result(qid, qname, uid, totalc, totalp):
+    def result(qid, qname, uid, totalc, totalp, diff):
         try:
             conn = sqlite3.connect('main.db')
             c = conn.cursor()
-            query = "INSERT INTO results(userId, quizId, quizName, totalCorrect, totalPercentage) VALUES (?,?,?,?,?)"
-            data = (int(uid), int(qid), str(qname), int(totalc), str(totalp))
+            date = datetime.now().strftime('%H:%M:%S %d/%m/%Y')
+            query = "INSERT INTO results(userId, quizId, quizName, totalCorrect, totalPercentage, difficulty, date) VALUES (?,?,?,?,?,?,?)"
+            data = (int(uid), int(qid), str(qname), int(totalc), float(totalp), str(diff), str(date))
             c.execute(query, data)
             conn.commit()
             conn.close()
@@ -164,7 +169,7 @@ class Get:
         try:
             conn = sqlite3.connect('main.db')
             c = conn.cursor()
-            query = "SELECT * FROM results WHERE userId={}".format(userId)
+            query = "SELECT * FROM results WHERE userId={} ORDER BY totalPercentage DESC".format(userId)
             results = []
             for row in c.execute(query):
                 results.append(row)

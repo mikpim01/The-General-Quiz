@@ -22,7 +22,7 @@ class Account:
         if any(char.isdigit() for char in lname):
             errors.append("Your Last name shouldn't contain Numbers")
 
-        # To-Be username textStyles
+        # To-Be username checks
         username = fname[:3] + str(age)
         if db.Check.userexists(str(username)):
             errors.append("User already exists")
@@ -32,7 +32,7 @@ class Account:
             errors.append("Password too short")
 
         if (len(confpassword) > 6) != True:
-            errors.append("Password too short")
+            errors.append("Password confirm too short")
 
         if password != confpassword:
             errors.append("Passwords don't match")
