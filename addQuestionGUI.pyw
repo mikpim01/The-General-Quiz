@@ -32,7 +32,6 @@ class questionGUI:
 
 
     def addQuestion(self):
-        print("Adding Question: " + str(self.question.get()))
         quizId = self.quizId.get()
         question = self.question.get()
         correctAns = self.correctAns.get()
@@ -48,9 +47,7 @@ class questionGUI:
         self.ansC.set("")
 
         incorrectAns = [str(ansA), str(ansB), str(ansC)]
-
         db.Add.question(quizId, question, correctAns, incorrectAns)
-        print(str(quizId), str(question), str(correctAns), str(incorrectAns))
 
 
 root = Tk()
