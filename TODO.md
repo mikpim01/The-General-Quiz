@@ -26,6 +26,6 @@
 - [x] Saves result after test
 
 ### Results section
-- [ ] Create Results code
-- [ ] order results by percentage (Displayed for current user)
+- [x] Create Results code
+- [x] order results by percentage (Displayed for current user)
 - [ ] Create export csv for admin / teacher with all results selected
