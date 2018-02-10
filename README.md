@@ -1,0 +1,1 @@
+[![Documentation Status](http://readthedocs.org/projects/the-general-quiz/badge/?version=latest)](http://the-general-quiz.readthedocs.io/en/latest/?badge=latest)
