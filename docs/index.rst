@@ -1,20 +1,16 @@
-.. The General Quiz documentation master file, created by
-   sphinx-quickstart on Sat Feb 10 14:42:14 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Home
+====
 
-Welcome to The General Quiz's documentation!
-============================================
+.. code-block:: python
+    :caption: Calling a function
+    :name: functionCall
+
+    section.class.function(param1, param2, param3)
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :caption: Sections:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    security
+    db
+    menu
+    ui
