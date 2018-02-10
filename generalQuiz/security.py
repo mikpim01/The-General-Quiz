@@ -8,6 +8,7 @@ import uuid
 from generalQuiz import db, menu, config
 from generalQuiz.helper import cprint
 
+
 class Account:
     def validateReg(fname, lname, password, confpassword, age, year):
         errors = []
@@ -49,25 +50,12 @@ class Account:
 
         return errors
 
-    '''
-    The createAccount function gets passed info from the register function
-    and stores the details as a new account in the database.
-
-    @param {string} username
-    @param {string} password
-    '''
 
     def register(username, password, fname, lname, age, year):
         hashedPassword = Hash.psk(password)
         db.Add.user(username, hashedPassword, fname, lname, age, year)
 
-    '''
-    The loginAccount function getys passed info from the login functions
-    and checks the password with the pskCheck function.
 
-    @param {string} username
-    @param {string} password
-    '''
     def login(username, password):
         hashedPassword = str(db.Get.password(username))
         if Hash.pskCheck(hashedPassword, password):
@@ -78,26 +66,11 @@ class Account:
 
 
 class Hash:
-    '''
-    The psk function hashes the password using sha512 with uuid4 salt and then
-    returns the hash and the salt
-
-    @param {string} password
-    @return {string} hash
-    '''
-
     def psk(password):
         salt = config.Get.salt()
         return hashlib.sha512(salt.encode() + password.encode()).hexdigest()
 
-    '''
-    The pskCheck function takes in a hashed and unhashed password and returns
-    True or False based on weather the password equals the hashed password.
 
-    @param {string} hashedPassword
-    @param {string} password
-    @return {boolean}
-    '''
     def pskCheck(hashedPassword, password):
         salt = config.Get.salt()
         return hashedPassword == hashlib.sha512(salt.encode() + password.encode()).hexdigest()
