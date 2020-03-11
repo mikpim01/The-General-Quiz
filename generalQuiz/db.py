@@ -8,15 +8,25 @@ from os import path
 from json import dumps
 from datetime import datetime
 
+
 class Database:
-    def setup():
+    def __init__(self):
+        exists = False
+        self.connection = None
+        self.cursor = None
+
         if path.exists('main.db'):
-            return True
-        else:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
-            c.execute('''CREATE TABLE 'users' (
-                'id' INTEGER PRIMARY KEY,
+            exists = True
+
+        self.connection = sqlite3.connect('main.db')
+        self.cursor = self.connection.cursor()
+        
+        if (exists != True):
+            self.connection = sqlite3.connect('main.db')
+            self.cursor = self.connection.cursor()
+
+            self.cursor.execute('''CREATE TABLE 'users' (
+                'id' INTEGER UNIQUE PRIMARY KEY,
                 'username' TEXT,
                 'password' TEXT,
                 'firstName' TEXT,
@@ -24,19 +34,22 @@ class Database:
                 'age' INTEGER,
                 'year' TEXT
             );''')
-            c.execute('''CREATE TABLE 'quizlist' (
-                'id' INTEGER PRIMARY KEY,
+
+            self.cursor.execute('''CREATE TABLE 'quizlist' (
+                'id' INTEGER UNIQUE PRIMARY KEY,
                 'name' TEXT
             );''')
-            c.execute('''CREATE TABLE 'questions' (
-                'id' INTEGER PRIMARY KEY,
+
+            self.cursor.execute('''CREATE TABLE 'questions' (
+                'id' INTEGER UNIQUE PRIMARY KEY,
                 'quizId' INTEGER,
                 'question' TEXT,
                 'correctAns' TEXT,
                 'otherAns' TEXT
             )''')
-            c.execute('''CREATE TABLE 'results' (
-                'id' INTEGER PRIMARY KEY,
+
+            self.cursor.execute('''CREATE TABLE 'results' (
+                'id' INTEGER UNIQUE PRIMARY KEY,
                 'userId' INTEGER,
                 'quizId' INTEGER,
                 'quizName' TEXT,
@@ -45,152 +58,132 @@ class Database:
                 'difficulty' TEXT,
                 'date' TEXT
             )''')
-            conn.commit()
-            conn.close()
+
             import populate
 
+    def close(self):
+        self.connection.commit()
+        self.connection.close()
 
-class Add:
-    def user(username, password, fname, lname, age, year):
+    def add_user(self, username, password, fname, lname, age, year):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             query = "INSERT INTO users(username, password, firstName, lastName, age, year) VALUES (?,?,?,?,?,?)"
-            data = (str(username), str(password), str(fname), str(lname), int(age), str(year))
-            c.execute(query, data)
-            conn.commit()
-            conn.close()
+            data = (str(username), str(password), str(
+                fname), str(lname), int(age), str(year))
+            self.cursor.execute(query, data)
+            self.connection.commit()
         except Exception:
             print("Error with db, cannot import data")
 
-    def question(quizId, question, correctAns, otherAns):
+    def add_question(self, quizId, question, correctAns, otherAns):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             query = "INSERT INTO questions(quizId, question, correctAns, otherAns) VALUES (?,?,?,?)"
-            data = (int(quizId), str(question), str(correctAns), str(dumps(otherAns)))
-            c.execute(query, data)
-            conn.commit()
-            conn.close()
+            data = (int(quizId), str(question), str(
+                correctAns), str(dumps(otherAns)))
+            self.cursor.execute(query, data)
+            self.connection.commit()
         except Exception:
             print("Error with db, couldnt add question")
 
-
-    def quiz(name):
+    def add_quiz(self, name):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             query = "INSERT INTO quizlist(name) VALUES (?)"
             data = (str(name),)
-            c.execute(query, data)
-            conn.commit()
-            conn.close()
+            self.cursor.execute(query, data)
+            self.connection.commit()
         except Exception as e:
             print("Error with db, cannot create quiz" + str(e))
 
-    def result(qid, qname, uid, totalc, totalp, diff):
+    def add_result(self, qid, qname, uid, totalc, totalp, diff):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             date = datetime.now().strftime('%H:%M:%S %d/%m/%Y')
             query = "INSERT INTO results(userId, quizId, quizName, totalCorrect, totalPercentage, difficulty, date) VALUES (?,?,?,?,?,?,?)"
-            data = (int(uid), int(qid), str(qname), int(totalc), float(totalp), str(diff), str(date))
-            c.execute(query, data)
-            conn.commit()
-            conn.close()
+            data = (int(uid), int(qid), str(qname), int(
+                totalc), float(totalp), str(diff), str(date))
+            self.cursor.execute(query, data)
+            self.connection.commit()
         except Exception as e:
             print("Error with db, cannot insert result")
             print(e)
 
-class Get:
-    def password(username):
+    def get_password(self, username):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
-            query = "SELECT password FROM users WHERE username='{}'".format(username)
-            c.execute(query)
-            data = c.fetchone()
-            conn.close()
+            query = "SELECT password FROM users WHERE username='{}'".format(
+                username)
+            self.cursor.execute(query)
+            data = self.cursor.fetchone()
             return data[0]
+
         except Exception:
             print("User Doesn't Exist")
 
-    def userData(username):
+    def get_userData(self, username):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
-            query = "SELECT * FROM users WHERE username='{}'".format(username)
-            c.execute(query)
-            data = c.fetchone()
-            conn.close()
-            userData = {'id':data[0], 'username':data[1], 'fname':data[3], 'lname':data[4], 'age':data[5], 'year':data[6]}
+            query = "SELECT * FROM users WHERE username='{}'".format(
+                username)
+            self.cursor.execute(query)
+            data = self.cursor.fetchone()
+            userData = {'id': data[0], 'username': data[1], 'fname': data[3],
+                        'lname': data[4], 'age': data[5], 'year': data[6]}
             return userData
         except Exception:
             print("User Doesn't Exist")
 
-    def quiz(id):
+    def get_quiz(self, id):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             query = "SELECT * FROM quizlist WHERE id='{}'".format(id)
-            c.execute(query)
-            data = c.fetchone()
-            conn.close()
+            self.cursor.execute(query)
+            data = self.cursor.fetchone()
             return data
         except Exception:
             print("Error, cannot get quiz")
 
-    def questions(quizId):
+    def get_questions(self, quizId):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             questions = []
-            query = "SELECT * FROM questions WHERE quizId='{}'".format(quizId)
-            for question in c.execute(query):
+            query = "SELECT * FROM questions WHERE quizId='{}'".format(
+                quizId)
+            for question in self.cursor.execute(query):
                 questions.append(question)
-            conn.close()
             return questions
         except Exception:
             print("Errors")
 
-    def quizList():
+    def get_quizList(self):
         quizList = []
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
             query = "SELECT * FROM quizList"
-            for row in c.execute(query):
+            for row in self.cursor.execute(query):
                 quizList.append(row)
-            conn.close()
         except Exception:
             print("Cannot get quiz list")
         return quizList
 
-    def results(userId):
+    def get_results(self, userId):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
-            query = "SELECT * FROM results WHERE userId={} ORDER BY totalPercentage DESC".format(userId)
+            query = "SELECT * FROM results WHERE userId={} ORDER BY totalPercentage DESC".format(
+                userId)
             results = []
-            for row in c.execute(query):
+            for row in self.cursor.execute(query):
                 results.append(row)
-            conn.close()
             return results
         except Exception:
             print("Error with db, cannot get results for specified user")
 
-class Check:
-    def userexists(username):
+    def check_userexists(self, username):
         try:
-            conn = sqlite3.connect('main.db')
-            c = conn.cursor()
-            query = "SELECT * FROM users WHERE username='{}'".format(username)
-            c.execute(query)
-            data = c.fetchone()
-            conn.close()
+            query = "SELECT * FROM users WHERE username='{}'".format(
+                username)
+            self.cursor.execute(query)
+            data = self.cursor.fetchone()
             if data == None:
                 return False
             else:
                 return True
         except Exception:
             print("Error running query")
+
+db = Database()
+
+def get_database():
+    return db

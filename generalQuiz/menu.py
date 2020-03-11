@@ -8,7 +8,7 @@ from generalQuiz.helper import cprint, pline
 from shutil import get_terminal_size
 
 config.Create()
-db.Database.setup()
+database = db.get_database()
 
 
 class Main:
@@ -30,12 +30,14 @@ class Main:
             Account()
         elif option == "2":
             cprint("Cya Later!")
+            database.close()
             exit()
         else:
             pline("=")
             cprint(" Not a valid option, Try again ", "lightred")
             pline("=")
             self.options()
+
 
 class Account:
     def __init__(self):
@@ -80,7 +82,6 @@ class Account:
             cprint(" Login details incorrect ", "lightred")
             self.login()
 
-
     def register(self):
         cprint("Register an account")
         pline("=")
@@ -96,7 +97,8 @@ class Account:
         confPassword = input("> ")
         cprint("Enter your year group")
         year = input("> ")
-        account = security.Account.validateReg(fname, lname, password, confPassword, age, year)
+        account = security.Account.validateReg(
+            fname, lname, password, confPassword, age, year)
         if account != []:
             pline("!", "lightred")
             for i in account:
@@ -106,12 +108,16 @@ class Account:
             self.register()
         else:
             username = str(fname[:3]) + str(age)
-            security.Account.register(username, password, fname, lname, age, year)
-            cprint("Account created. Your username is: " + username, "lightgreen")
+            security.Account.register(
+                username, password, fname, lname, age, year)
+            cprint("Account created. Your username is: " +
+                   username, "lightgreen")
             self.login()
+
 
 class Home:
     user = None
+
     def __init__(self, user):
         self.user = user
         pline("=")
@@ -147,13 +153,16 @@ class Home:
         elif option == "3":
             cprint("Profile Options Page")
         elif option == "4":
+            database.close()
             exit()
         else:
             cprint("Option Doesn't Exist", "lightred")
             Home(user)
 
+
 class Quiz:
-    quizList = db.Get.quizList()
+    quizList = database.get_quizList()
+
     def __init__(self, user):
         self.list(self.quizList, user)
 
@@ -185,16 +194,19 @@ class Quiz:
             pline("=")
             self.list(self.quizList)
 
+
 class Results:
     def __init__(self, user):
         width = get_terminal_size()[0]-1
-        data = db.Get.results(user["id"])
+        data = database.get_results(user["id"])
         self.display(data, width, user)
 
     def display(self, data, width, user):
         size = int(width/5)
-        print("\n{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(size*2), qName="Quiz Name", diff="Difficulty", score="Score", date="Date"))
+        print("\n{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(
+            size), sizeTwo=str(size*2), qName="Quiz Name", diff="Difficulty", score="Score", date="Date"))
         cprint("~"*(width-4), "lightcyan")
         for result in data:
-            print("{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(size*2), qName=str(result[3]), diff=str(result[6]), score=str(result[5])+"%", date=str(result[7])))
+            print("{qName:^{sizeTwo}} {score:^{size}} {diff:^{size}} {date:^{size}}".format(size=str(size), sizeTwo=str(
+                size*2), qName=str(result[3]), diff=str(result[6]), score=str(result[5])+"%", date=str(result[7])))
         Home(user)

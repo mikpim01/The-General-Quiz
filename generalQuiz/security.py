@@ -9,6 +9,8 @@ from generalQuiz import db, menu, config
 from generalQuiz.helper import cprint
 
 
+database = db.get_database()
+
 class Account:
     def validateReg(fname, lname, password, confpassword, age, year):
         errors = []
@@ -25,7 +27,7 @@ class Account:
 
         # To-Be username checks
         username = fname[:3] + str(age)
-        if db.Check.userexists(str(username)):
+        if database.check_userexists(str(username)):
             errors.append("User already exists")
 
         # Password Checks
@@ -50,16 +52,14 @@ class Account:
 
         return errors
 
-
     def register(username, password, fname, lname, age, year):
         hashedPassword = Hash.psk(password)
-        db.Add.user(username, hashedPassword, fname, lname, age, year)
-
+        database.add_user(username, hashedPassword, fname, lname, age, year)
 
     def login(username, password):
-        hashedPassword = str(db.Get.password(username))
+        hashedPassword = str(database.get_password(username))
         if Hash.pskCheck(hashedPassword, password):
-            userData = db.Get.userData(username)
+            userData = database.get_userData(username)
             return userData
         else:
             return False
@@ -69,7 +69,6 @@ class Hash:
     def psk(password):
         salt = config.Get.salt()
         return hashlib.sha512(salt.encode() + password.encode()).hexdigest()
-
 
     def pskCheck(hashedPassword, password):
         salt = config.Get.salt()
